@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Балообразуване - ТУ София</title>
+    <!-- Лого в таба -->
+    <link rel="icon" href="https://tu-sofia.bg/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Трябва ни jQuery за калкулатора -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow">
+    <div class="container">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="index.html">Начало</a></li>
+                <li class="nav-item"><a class="nav-link" href="specialties.html">Специалности</a></li>
+                <li class="nav-item"><a class="nav-link active" href="scoring.html">Балообразуване</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Контакти</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container my-5">
+    <div id="calculator">
+        <h2 class="text-center mb-4">Калкулатор за състезателен бал</h2>
+        <p class="text-muted text-center">Изберете специалност, за да видите формулата и да изчислите своя бал.</p>
+        
+        <select id="selector">
+            <option value="" selected disabled hidden>-- Изберете специалност --</option>
+            <option value="1">Компютърно и софтуерно инженерство</option>
+            <option value="1">Информатика и софтуерни науки</option>
+            <option value="4">Киберсигурност</option>
+        </select>
+
+        <div id="container-calc" class="hidden">
+            <div class="table-responsive">
+                <table id="dynamic-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Диплома по:</th>
+                            <th style="width: 35%;">Диплома (най-висока от):</th>
+                            <th style="width: 40%;" id="column-3">
+                                <span class="default-text">Допълнителна оценка (Матура/Тест):</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Тук JS ще вкара редовете -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center">
+                <button id="calc-button" class="btn btn-primary btn-lg px-5">Пресметни бала</button>
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer fixed-bottom">
+    <div class="container">
+        <span>Изработено от: Стефан Бончев 12б &copy; 2026</span>
+    </div>
+</footer>
+
+<script>
+$(document).ready(function() {
+    // Конфигурация, извлечена от твоя файл
+    const calcConfig = {
+        '1': {
+            col1: 'Математика',
+            col2: ['Физика', 'Информатика', 'ИТ'],
+            col3Type: 'max',
+            col3: [
+                { label: 'Матура БЕЛ', coeff: 2.5 },
+                { label: 'Матура Математика', coeff: 3 },
+                { label: 'Тест по Математика (ЕПИ)', coeff: 3 }
+            ]
+        },
+        '2': {
+            col1: 'Математика',
+            col2: ['Физика', 'ИТ'],
+            col3Type: 'special',
+            col3: [
+                { label: 'Изпит по рисуване', coeff: 1.5 },
+                { label: 'Изпит по композиция', coeff: 1.5 }
+            ]
+        },
+        '3': {
+            col1: 'Математика',
+            col2: ['География'],
+            col3Type: 'max',
+            col3: [
+                { label: 'Матура БЕЛ', coeff: 2.5 },
+                { label: 'Матура Чужд език', coeff: 3 },
+                { label: 'Тест по Математика', coeff: 3 }
+            ]
+        },
+        '4': {
+            col1: 'Математика',
+            col2: ['Физика', 'Информатика', 'ИТ'],
+            col3Type: 'max',
+            col3: [
+                { label: 'Матура Математика', coeff: 3 },
+                { label: 'Тест по Математика', coeff: 3 }
+            ]
+        }
+    };
+
+    $('#selector').on('change', function() {
+        let type = $(this).val();
+        renderTable(type);
+    });
+
+    function renderTable(type) {
+        const config = calcConfig[type];
+        const tbody = $('#table-body');
+        tbody.empty();
+        $('#result').hide();
+        $('#container-calc').removeClass('hidden');
+
+        let maxRows = Math.max(1, config.col2.length, config.col3.length);
+
+        for (let i = 0; i < maxRows; i++) {
+            let tr = $('<tr>');
+            // Col 1
+            if (i === 0) {
+                tr.append(`<td>${config.col1}: <input type="text" class="g1"></td>`);
+            } else { tr.append('<td></td>'); }
+            // Col 2
+            if (i < config.col2.length) {
+                let prefix = i === 0 ? '' : '<span class="bolded">или </span>';
+                tr.append(`<td>${prefix}${config.col2[i]}: <input type="text" class="g2"></td>`);
+            } else { tr.append('<td></td>'); }
+            // Col 3
+            if (i < config.col3.length) {
+                let item = config.col3[i];
+                let prefix = (config.col3Type === 'max' && i > 0) ? '<span class="bolded">или </span>' : (i > 0 ? '<span class="bolded">и </span>' : '');
+                tr.append(`<td>${prefix}${item.label} (x${item.coeff}): <input type="text" class="g3" data-coeff="${item.coeff}"></td>`);
+            } else { tr.append('<td></td>'); }
+
+            tbody.append(tr);
+        }
+    }
+
+    $('#calc-button').on('click', function() {
+        let hasError = false;
+        $('input').removeClass('error-bg');
+
+        const g1Val = parseFloat($('.g1').val());
+        let g2Max = 0;
+        $('.g2').each(function() {
+            let v = parseFloat($(this).val());
+            if (!isNaN(v)) g2Max = Math.max(g2Max, v);
+        });
+
+        let g3Score = 0;
+        let type = $('#selector').val();
+        if(calcConfig[type].col3Type === 'max') {
+            $('.g3').each(function() {
+                let v = parseFloat($(this).val());
+                let c = parseFloat($(this).data('coeff'));
+                if (!isNaN(v)) g3Score = Math.max(g3Score, v * c);
+            });
+        } else {
+            $('.g3').each(function() {
+                let v = parseFloat($(this).val());
+                let c = parseFloat($(this).data('coeff'));
+                if (!isNaN(v)) g3Score += (v * c);
+            });
+        }
+
+        if (isNaN(g1Val) || g2Max === 0 || g3Score === 0) {
+            alert("Моля, въведете валидни оценки!");
+        } else {
+            let total = g1Val + g2Max + g3Score;
+            $('#result').html(`Вашият състезателен бал е: <span class="text-primary">${total.toFixed(2)}</span>`).fadeIn();
+        }
+    });
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

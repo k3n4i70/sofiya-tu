@@ -1,0 +1,131 @@
+:root {
+    --tu-blue: #004494;
+    --tu-light-blue: #0056b3;
+    --white: #ffffff;
+}
+
+body {
+    padding-top: 70px;
+    padding-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+header {
+    background-color: var(--white);
+    border-bottom: 3px solid var(--tu-blue);
+    padding: 20px 0;
+    text-align: center;
+}
+
+.university-logo {
+    max-height: 80px;
+}
+
+.navbar {
+    background-color: var(--tu-blue) !important;
+}
+
+.nav-link {
+    color: white !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #ffc107 !important;
+}
+
+.footer {
+    background-color: var(--tu-blue);
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}
+
+h1, h2, h3 {
+    color: var(--tu-blue);
+}
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.carousel-img {
+    height: 600px; 
+    object-fit: cover;
+}
+
+.carousel-caption {
+    padding: 10px;
+    bottom: 20px;
+}
+
+.carousel:focus {
+    outline: none;
+}
+
+/* Специфични стилове за калкулатора */
+#calculator {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+#selector {
+    padding: 10px;
+    border: 2px solid var(--tu-blue);
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#dynamic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#dynamic-table th {
+    background-color: var(--tu-blue);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+#dynamic-table td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    background: #fff;
+    position: relative;
+}
+
+#dynamic-table input[type="text"] {
+    width: 60px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.error-bg {
+    background-color: #ffcccc !important;
+}
+
+#result {
+    display: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    border-left: 5px solid var(--tu-blue);
+    margin-top: 20px;
+}
+
+.hidden { display: none; }
+.bolded { font-weight: bold; color: var(--tu-blue); }
